@@ -1,0 +1,338 @@
+{% extends '../base.html' %}
+
+{% block title%}
+    Список тарифов авикомпании {{ airline_name }}
+{% endblock %}
+
+{% block content %}
+    <div class="row mt-3 mx-3">
+        <div class="col">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item" aria-current="page"><a href="{% url 'airoport_app:list_airlines' %}">Авиакомпании</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">"{{ airline_name }}"</li>
+                    <li class="breadcrumb-item active" aria-current="page">Тарифы</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <div class="row mx-3">
+        <div class="col text-right">
+            <a href="{% url 'airoport_app:add_tarif' airline_name %}" class="btn mb-3 btn-success btn-lg" type="button">Добавить тариф</a>
+        </div>
+    </div>
+
+
+    <div class="text-center pb-5">
+        <h1>Список тарифов авикомпании "{{airline_name}}"</h1>
+    </div>
+
+    {% if tarifs %}
+    <div class="row mx-3 mt-3">
+            <div class="col-4 text-left">
+                {% comment %} блок с поисковой строкой {% endcomment %}
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon1">Поиск тарифа</span>
+                    </div>
+                    <input id="search-bar" type="text" class="form-control" placeholder="Номер тарифа..." aria-label="Username" aria-describedby="basic-addon1">
+                </div>
+                </div>
+            </div>
+
+         {% comment %} таблица со списком тарифов{% endcomment %}
+         <table id="tarifs-table" class="table table-hover table-responsive">
+            <thead class="text-center">
+                <tr>
+                    <th scope="col">Код тарифа</th>
+                    <th scope="col">Название тарифа</th>
+                    <th scope="col">Редактировать</th>
+                    <th scope="col">Удалить</th>
+                    <th scope="col">Допустимый вес багажа(кг)</th>
+                    <th scope="col">Допустимый вес ручной клади(кг)</th>
+                    <th scope="col">Доп.плата за питомца</th>
+                    <th scope="col">Возможность сдачи билета</th>
+                    <th scope="col">Выбор места</th>
+                    <th scope="col">Возможность возврата</th>
+                    <th scope="col">Кол-во начисления бонусов</th>
+                    <th scope="col">Возможность повышения класса</th>
+                    <th scope="col">Наличие открытой даты вылета</th>
+                    <th scope="col">Приоритетная регистрация</th>
+                    <th scope="col">Приоритетный досмотр</th>
+                    <th scope="col">Приоритетная посадка</th>
+                    <th scope="col">Приоритетное обслуживание багажа</th>
+                </tr>
+            </thead>
+
+            <tbody class="text-center">
+                {% for t in tarifs %}
+                    <tr>
+                        {% comment %} код тарифа {% endcomment %}
+                        <th scope="row">{{ t.tarif_code }}</th>
+                        
+                        {% comment %} название тарифа {% endcomment %}
+                        <th scope="row">{{ t.name }}</th>
+
+                        {% comment %} кнопка редактировать  {% endcomment %}
+                        <td>
+                            <a href="{% url 'airoport_app:update_tarif' t.airline_name t.tarif_code %}" class="btn btn-warning" type=button> 
+                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z"/>
+                                </svg>   
+                            </a>
+                        </td>
+
+                        {% comment %} кнопка удалить {% endcomment %}
+                        <td>
+                            <button class="btn btn-danger" type="button" data-toggle="modal" data-target="#deleteTarif{{t.tarif_code}}">
+                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/>
+                                </svg> 
+                            </button>
+                        </td>
+
+                        {% comment %} Допустимый вес багажа(кг) {% endcomment %}
+                        <td>
+                            {{ t.permissible_luggage_weight }}
+                        </td>
+
+                        {% comment %} Допустимый вес ручной клади(кг) {% endcomment %}
+                        <td>
+                            {{ t.permissible_weight_hand_luggage }}
+                        </td>
+
+
+                        {% comment %} Доп.плата за питомца {% endcomment %}
+                        <td>
+                            {% if t.extra_fee_for_pet %}
+                            <button type="button" class="btn btn-outline-success" data-toggle="tooltip" data-placement="top" title="Имеется Доп.плата за питомца">
+                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 11.917 9.724 16.5 19 7.5"/>
+                                  </svg>                                          
+                            </button>
+                            {% else %}
+                            <button type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-placement="top" title="Отсутствует Доп.плата за питомца">
+                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6"/>
+                                </svg>  
+                            </button>
+                            {% endif %}
+                        </td>
+
+                        {% comment %} Возможность сдачи билета {% endcomment %}
+                        <td>
+                            {% if t.possibility_of_changing_ticket %}
+                            <button type="button" class="btn btn-outline-success" data-toggle="tooltip" data-placement="top" title="Имеется Возможность сдачи билета">
+                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 11.917 9.724 16.5 19 7.5"/>
+                                  </svg>                                          
+                            </button>
+                            {% else %}
+                            <button type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-placement="top" title="Отсутствует Возможность сдачи билета ">
+                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6"/>
+                                </svg>  
+                            </button>
+                            {% endif %}
+                        </td>
+
+                        {% comment %} Выбор места {% endcomment %}
+                        <td>
+                            {% if t.choice_of_location %}
+                            <button type="button" class="btn btn-outline-success" data-toggle="tooltip" data-placement="top" title="Имеется Возможность выбора места">
+                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 11.917 9.724 16.5 19 7.5"/>
+                                  </svg>                                          
+                            </button>
+                            {% else %}
+                            <button type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-placement="top" title="Отсутствует Возможность выбор места">
+                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6"/>
+                                </svg>  
+                            </button>
+                            {% endif %}
+                        </td>
+
+                        {% comment %} Возможность возврата {% endcomment %}
+                        <td>
+                            {% if t.possibility_of_return %}
+                            <button type="button" class="btn btn-outline-success" data-toggle="tooltip" data-placement="top" title="Имеется Возможность возврата">
+                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 11.917 9.724 16.5 19 7.5"/>
+                                  </svg>                                          
+                            </button>
+                            {% else %}
+                            <button type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-placement="top" title="Отсутствует Возможность возврата">
+                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6"/>
+                                </svg>  
+                            </button>
+                            {% endif %}
+                        </td>
+
+                        {% comment %} Кол-во начисления бонусов {% endcomment %}
+                        <td>
+                            {{ t.number_of_accrued_bonuses }}
+                        </td>
+
+                        {% comment %} Возможность повышения класса {% endcomment %}
+                        <td>
+                            {% if t.possibility_of_upgrade %}
+                            <button type="button" class="btn btn-outline-success" data-toggle="tooltip" data-placement="top" title="Имеется Возможность повышения класса">
+                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 11.917 9.724 16.5 19 7.5"/>
+                                  </svg>                                          
+                            </button>
+                            {% else %}
+                            <button type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-placement="top" title="Отсутствует Возможность повышения класса">
+                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6"/>
+                                </svg>  
+                            </button>
+                            {% endif %}
+                        </td>
+
+                        {% comment %} Наличие открытой даты вылета {% endcomment %}
+                        <td>
+                            {% if t.availability_of_open_departure_date %}
+                            <button type="button" class="btn btn-outline-success" data-toggle="tooltip" data-placement="top" title="Имеется открытая дата вылета">
+                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 11.917 9.724 16.5 19 7.5"/>
+                                  </svg>                                          
+                            </button>
+                            {% else %}
+                            <button type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-placement="top" title="Отсутствует открытая дата вылета">
+                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6"/>
+                                </svg>  
+                            </button>
+                            {% endif %}
+                        </td>
+
+                        {% comment %} Приоритетная регистрация {% endcomment %}
+                        <td>
+                            {% if t.priority_registration %}
+                            <button type="button" class="btn btn-outline-success" data-toggle="tooltip" data-placement="top" title="Имеется Приоритетная регистрация">
+                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 11.917 9.724 16.5 19 7.5"/>
+                                  </svg>                                          
+                            </button>
+                            {% else %}
+                            <button type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-placement="top" title="Отсутствует Приоритетная регистрация">
+                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6"/>
+                                </svg>  
+                            </button>
+                            {% endif %}
+                        </td>
+
+                        {% comment %} Приоритетный досмотр {% endcomment %}
+                        <td>
+                            {% if t.priority_screening %}
+                            <button type="button" class="btn btn-outline-success" data-toggle="tooltip" data-placement="top" title="Имеется Приоритетный досмотр">
+                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 11.917 9.724 16.5 19 7.5"/>
+                                  </svg>                                          
+                            </button>
+                            {% else %}
+                            <button type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-placement="top" title="Отсутствует Приоритетный досмотр">
+                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6"/>
+                                </svg>  
+                            </button>
+                            {% endif %}
+                        </td>
+
+                        {% comment %} Приоритетная посадка {% endcomment %}
+                        <td>
+                            {% if t.priority_boarding %}
+                            <button type="button" class="btn btn-outline-success" data-toggle="tooltip" data-placement="top" title="Имеется Приоритетная посадка">
+                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 11.917 9.724 16.5 19 7.5"/>
+                                  </svg>                                          
+                            </button>
+                            {% else %}
+                            <button type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-placement="top" title="Отсутствует Приоритетная посадка">
+                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6"/>
+                                </svg>  
+                            </button>
+                            {% endif %}
+                        </td>
+
+                        {% comment %} Приоритетное обслуживание багажа {% endcomment %}
+                        <td>
+                            {% if t.priority_baggage_handling %}
+                            <button type="button" class="btn btn-outline-success" data-toggle="tooltip" data-placement="top" title="Имеется Приоритетное обслуживание багажа">
+                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 11.917 9.724 16.5 19 7.5"/>
+                                  </svg>                                          
+                            </button>
+                            {% else %}
+                            <button type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-placement="top" title="Отсутствует Приоритетное обслуживание багажа">
+                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6"/>
+                                </svg>  
+                            </button>
+                            {% endif %}
+                        </td>
+                    </tr>
+
+                    {% comment %} модальное окно под удаление тарифа {% endcomment %}
+                    <div class="modal fade" id="deleteTarif{{t.tarif_code}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header bg-danger">
+                                    <h5 class="modal-title text-white" id="exampleModalLabel">Удалить тарфи</h5>
+                                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                            
+                                <div class="modal-body">          
+                                    <p class="text-center">
+                                        Вы точно хотите удалить тариф <span class="text-danger">"{{ t.tarif_code }}"</span>?          
+                                    </p>            
+                                </div>
+                                            
+                                <div class="modal-footer">          
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Нет</button>
+                                    <form method="POST" action="{% url 'airoport_app:delete_tarif' t.airline_name t.tarif_code  %}">
+                                        {% csrf_token %}
+                                        <input type="submit" class="btn btn-danger" value="Да, удаляем">
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% comment %} конец модального окна под удаление тарифа {% endcomment %}
+                {% endfor %}
+            </tbody>
+
+        </table>
+    {% else %}
+        <div class="text-center">
+            <h2 class="font-italic mt-5 text-secondary">У авиакомпании "{{airline_name}}" пока нет тарифов...</h2>
+
+            <a href="{% url 'airoport_app:add_tarif' airline_name %}" class="btn btn-lg btn-success mt-3" class="btn btn-success mt-2 btn-lg" type="button">Добавить тариф</a>
+        </div>
+    {% endif %}
+
+{% endblock %}
+
+
+{% block script %}
+<script type="text/javascript">
+
+    $(document).ready(function(){
+        $('#search-bar').on('keyup', function(){
+            var value = $(this).val().toLowerCase();
+            $('#tarifs-table tbody tr').filter(function(){
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+    });
+
+</script>
+{% endblock %}

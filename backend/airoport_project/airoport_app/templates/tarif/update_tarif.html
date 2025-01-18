@@ -1,0 +1,148 @@
+{% extends '../base.html' %}
+
+{% block title%}
+    Редактировать тариф "{{ tarif.name }}" авиакомпании "{{airline_name}}""
+{% endblock %}
+
+{% block content %}
+
+    <div class="row mt-3 mx-3">
+        <div class="col">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item" aria-current="page"><a href="{% url 'airoport_app:list_airlines' %}">Авиакомпании</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">"{{ airline_name }}"</li>
+                    <li class="breadcrumb-item" aria-current="page"><a href="{% url 'airoport_app:list_tarifs_airline' airline_name  %}">Тарифы</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ tarif.name }}</li>
+                    <li class="breadcrumb-item active" aria-current="page">Добавить тариф</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <div class="container mt-3">
+        <div class="row justify-content-center" style="height:80vh">
+            <div class="card my-auto">
+                <div class="card-header text-center bg-warning">
+                    <h1>Реадктировать тариф "{{tarif.name}}" авикомапнии "{{airline_name}}"</h1>
+
+                    {% if form.errors %}
+                    {{ form.errors }}
+                    {% endif %}
+                </div>
+
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        {% comment %} название тарифа {% endcomment %}
+                        <div class="mb-2">
+                            {{ form.name }}
+                        </div>
+
+                        {% comment %} Допустимый вес багажа(кг) {% endcomment %}
+                        <div class="mb-2">
+                            {{ form.permissible_luggage_weight }}
+                        </div>
+
+                        {% comment %} Допустимый вес ручной клади(кг) {% endcomment %}
+                        <div class="mb-2">
+                            {{ form.permissible_weight_hand_luggage }}
+                        </div>
+
+                        {% comment %} Доп.плата за питомца {% endcomment %}
+                        <div class="input-group mb-2">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon1">Доп.плата за питомца</span>
+                            </div>
+                            {{ form.extra_fee_for_pet }}
+                        </div>
+
+                        {% comment %} Возможность сдачи билет {% endcomment %}
+                        <div class="input-group mb-2">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon1">Возможность сдачи билета</span>
+                            </div>
+                            {{ form.possibility_of_changing_ticket }}
+                        </div>
+
+                        {% comment %} Выбор места {% endcomment %}
+                        <div class="input-group mb-2">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon1">Выбор места</span>
+                            </div>
+                            {{ form.choice_of_location }}
+                        </div>
+
+                        {% comment %} Возможность возврата {% endcomment %}
+                        <div class="input-group mb-2">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon1">Возможность возврата</span>
+                            </div>
+                            {{ form.possibility_of_return }}
+                        </div>
+
+                        {% comment %} Кол-во начисления бонусов {% endcomment %}
+                        <div class="mb-2">
+                            {{ form.number_of_accrued_bonuses }}
+                        </div>
+
+                        {% comment %} Возможность повышения класса  {% endcomment %}
+                        <div class="input-group mb-2">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon1">Возможность повышения класса</span>
+                            </div>
+                            {{ form.possibility_of_upgrade }}
+                        </div>
+
+                        {% comment %} Наличие открытой даты вылета {% endcomment %}
+                        <div class="input-group mb-2">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon1">Наличие открытой даты вылета</span>
+                            </div>
+                            {{ form.availability_of_open_departure_date }}
+                        </div>
+
+                        {% comment %} Приоритетная регистрация {% endcomment %}
+                        <div class="input-group mb-2">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon1">Приоритетная регистрация</span>
+                            </div>
+                            {{ form.priority_registration }}
+                        </div>
+
+                        {% comment %} Приоритетный досмотр {% endcomment %}
+                        <div class="input-group mb-2">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon1">Приоритетный досмотр</span>
+                            </div>
+                            {{ form.priority_screening }}
+                        </div>
+
+                        {% comment %} Приоритетная посадка  {% endcomment %}
+                        <div class="input-group mb-2">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon1">Приоритетная посадка</span>
+                            </div>
+                            {{ form.priority_boarding }}
+                        </div>
+
+                        {% comment %} Приоритетное обслуживание багажа {% endcomment %}
+                        <div class="input-group mb-2">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon1">Приоритетное обслуживание багажа</span>
+                            </div>
+                            {{ form.priority_baggage_handling }}
+                        </div>
+
+
+                        <input class="btn btn-lg btn-warning btn-block" type="submit" value="Редактировать тариф">
+                        <a type="button" href="{% url 'airoport_app:list_tarifs_airline' airline_name %}" class="btn btn-lg btn-secondary btn-block">
+                            Назад к списку тарифов
+                        </a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

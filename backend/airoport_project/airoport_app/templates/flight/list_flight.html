@@ -1,0 +1,258 @@
+{% extends '../base.html' %}
+
+{% block title%}
+    Список полетов
+{% endblock %}
+
+{% block content %}
+    <div class="row mt-3 mx-3">
+        <div class="col">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item active" aria-current="page">Полеты</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <div class="row mx-3">
+        <div class="col text-right">
+            <button type="button" class="btn mb-3 btn-info btn-lg" data-toggle="modal" data-target="#info">Справка</button>
+            <a href="{% url 'airoport_app:add_flight' %}" class="btn mb-3 btn-success btn-lg" type="button">Добавить полет</a>
+        </div>
+    </div>
+
+
+    <div class="text-center pb-5">
+        <h1>Список полетов</h1>
+    </div>
+
+    {% if flights %}
+
+
+        <div class="row mx-3 mt-3">
+            <div class="col-4 text-left">
+                {% comment %} блок с поисковой строкой {% endcomment %}
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon1">Поиск полета</span>
+                    </div>
+                    <input id="search-bar" type="text" class="form-control" placeholder="Номер полета, место назначени..." aria-label="Username" aria-describedby="basic-addon1">
+                </div>
+            </div>
+        </div>
+
+         {% comment %} таблица со списком полетов{% endcomment %}
+         <table id="flights-table" class="table table-hover table-responsive">
+            <thead class="text-center">
+                <tr>
+                    <th scope="col">Номер рейс</th>
+                    <th scope="col">Авиакомпания</th>
+                    <th scope="col">Международный перелет</th>
+                    <th scope="col">Место отправления</th>
+                    <th scope="col">Место назначения</th>
+                    <th scope="col">Дата вылета</th>
+                    <th scope="col">Время вылета</th>
+                    <th scope="col">Кол-во пассажиров</th>
+                    <th scope="col">Свободных билетов</th>
+                    <th scope="col">Билеты на рейс</th>
+                    <th scope="col">Редактировать</th>
+                    <th scope="col">Отменить рейс</th>
+                </tr>
+            </thead>
+
+            <tbody class="text-center">
+                {% for f in flights %}
+                    <tr
+                        {% if f.flight_cancel_status %}
+                            style="background-color: #FF0000;"
+                        {% else %}
+                            {% if f.flight_status == 'gray' %}
+                                class="table-secondary"
+                            {% elif f.flight_status == 'yellow' %}
+                                class="table-warning"
+                            {% elif f.flight_status == 'orange' %}
+                                style="background-color: #FFCC80;"
+                            {% elif f.flight_status == 'red' %}
+                                class="table-danger"
+                            {% elif f.flight_status == 'green' %}
+                                class="table-success"
+                            {% endif %}
+                        {% endif %}
+                    >
+                        {% comment %} номер полета {% endcomment %}
+                        <th scope="row">{{ f.flight_number }}</th>
+
+                        {% comment %} Авиакомпания {% endcomment %}
+                        <td>
+                            {{ f.flight_airline}}
+                        </td>
+
+                        {% comment %} международный статус {% endcomment %}
+                        <td>
+                            {% if flight.flight_international_status %}
+                                <button type="button" class="btn btn-outline-success" data-toggle="tooltip" data-placement="top" title="Является международным">
+                                    <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 11.917 9.724 16.5 19 7.5"/>
+                                    </svg>                                          
+                                </button>
+                            {% else %}
+                                <button type="button" class="btn btn-outline-danger" data-toggle="tooltip" data-placement="top" title="Не является международным">
+                                    <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6"/>
+                                    </svg>  
+                                </button>
+                            {% endif %}
+                        </td>
+
+                        {% comment %} Место отправления {% endcomment %}
+                        <td>
+                            {{ f.flight_place_departure }}
+                        </td>
+
+                        {% comment %} Место назначения {% endcomment %}
+                        <td>
+                            {{ f.flight_place_destination }}
+                        </td>
+
+                        {% comment %} дата вылета {% endcomment %}
+                        <td>
+                            {{ f.flight_date }}
+                        </td>
+
+                        {% comment %} время вылета {% endcomment %}
+                        <td>
+                            {{ f.flight_time }}
+                        </td>
+
+                        <td>
+                            {{ f.flight_passengers_count}}
+                        </td>
+
+                        {% comment %} свободных билетов {% endcomment %}
+                        <td>
+                            {{ f.free_ticket_count}}
+                        </td>
+
+                        {% comment %} кнопка билетов  {% endcomment %}
+                        <td>
+                                <a href="{% url 'airoport_app:flight_tickets_list' f.flight_number %}" class="btn btn-primary" type=button> 
+                                    <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M9 8h10M9 12h10M9 16h10M4.99 8H5m-.02 4h.01m0 4H5"/>
+                                    </svg>                                    
+                                </a>
+                        </td>
+
+                        {% comment %} кнопка редактировать  {% endcomment %}
+                        <td>
+                            {% if f.flight_status == 'gray' or f.flight_cancel_status %}  
+                                <button disabled class="btn btn-warning" type=button> 
+                                    <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z"/>
+                                    </svg>   
+                                </button>
+                            {% else %}
+                                <a href="{% url 'airoport_app:update_flight' f.flight_number %}" class="btn btn-warning" type=button> 
+                                    <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z"/>
+                                    </svg>   
+                                </a>
+                            {% endif %}
+                        </td>
+
+                        {% comment %} кнопка отменить {% endcomment %}
+                        <td>
+                                <button {% if f.flight_status == 'gray' or f.flight_cancel_status %} disabled {% endif %} class="btn btn-danger" type="button" data-toggle="modal" data-target="#deleteFlight{{f.flight_number}}">
+                                    <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="m6 6 12 12m3-6a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                                    </svg>                                  
+                                </button>
+                        </td>
+                    </tr>
+
+                    {% comment %} модальное окно под отену полета полета {% endcomment %}
+                    <div class="modal fade" id="deleteFlight{{f.flight_number}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header bg-danger">
+                                    <h5 class="modal-title text-white" id="exampleModalLabel">Отменить полет</h5>
+                                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                            
+                                <div class="modal-body">          
+                                    <p class="text-center">
+                                        Вы точно хотите отменить полет <span class="text-danger">"{{ f.flight_number }}"</span>?          
+                                    </p>            
+                                </div>
+                                            
+                                <div class="modal-footer">          
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Нет</button>
+                                    <form method="POST" action="{% url 'airoport_app:cancel_flight' f.flight_number  %}">
+                                        {% csrf_token %}
+                                        <input type="submit" class="btn btn-danger" value="Да, отменяем">
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% comment %} конец модального окна под отмену полета {% endcomment %}
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div class="text-center">
+            <h2 class="font-italic mt-5 text-secondary">Полетов пока нет...</h2>
+
+            <a href="{% url 'airoport_app:add_flight' %}" class="btn btn-lg btn-success mt-3" class="btn btn-success mt-2 btn-lg" type="button">Добавить полет</a>
+        </div>
+    {% endif %}
+
+    {% comment %} модальное окно с информацонной справко {% endcomment %}
+    <div class="modal fade" id="info" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-info">
+                    <h5 class="modal-title text-white" id="exampleModalLabel">Справка</h5>
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                            
+                <div class="modal-body text-center">   
+                    <div class="h4 mb-3">Цветовое обозначение полетов</div> 
+                    <ul class="list-group">
+                        <li class="list-group-item list-group-item-success">До вылета более 24 часов</li>
+                        <li class="list-group-item list-group-item-warning">До вылета менее 24 часов</li>
+                        <li class="list-group-item" style="background-color: #FFCC80;">До вылета менее 12 часов</li>
+                        <li class="list-group-item list-group-item-danger">До вылета менее 1 часа</li>
+                        <li class="list-group-item list-group-item-secondary">Вылет состоялся</li>
+                        <li class="list-group-item" style="background-color: #FF0000;">Вылет отменен</li>
+                    </ul>           
+                </div>
+                            
+                <div class="modal-footer">          
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Спасибо</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+
+{% block script %}
+<script type="text/javascript">
+
+    $(document).ready(function(){
+        $('#search-bar').on('keyup', function(){
+            var value = $(this).val().toLowerCase();
+            $('#flights-table tbody tr').filter(function(){
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+    });
+
+</script>
+{% endblock %}

@@ -1,0 +1,102 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>АИС Аэропорт - {% block title%}{% endblock %}</title>
+
+    {% comment %} фавикон {% endcomment %}
+    {% comment %} <link rel="icon" type="image/png" href='{% static "/tests_creator_app/img/logo/favicon-96x96.png" %}' sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href='{% static "/tests_creator_app/img/logo/favicon.svg" %}' />
+    <link rel="shortcut icon" href='{% static "/tests_creator_app/img/logo/favicon.ico" %}' />
+    <link rel="apple-touch-icon" sizes="180x180" href='{% static "/tests_creator_app/img/logo/apple-touch-icon.png" %}' />
+    <meta name="apple-mobile-web-app-title" content="АИС Тесты" />
+    <link rel="manifest" href='{% static "/tests_creator_app/img/logo/site.webmanifest" %}' /> {% endcomment %}
+    {% comment %} конец фавикона {% endcomment %}
+    
+    {% block head %} {% endblock%}
+    {% comment %} bs4.6 {% endcomment %}
+    <link rel="stylesheet" href="{% static '/airoport_app/css/bootstrap.min.css' %}">
+    <link type="application/octet-stream" rel="stylesheet" href="{% static '/airoport_app/css/bootstrap.min.css.map' %}">
+    <script src="{% static '/airoport_app/js/lib/jquery-3.7.1.min.js' %}"></script>
+    <script src="{% static '/airoport_app/js/lib/bootstrap4.6.2/bootstrap.bundle.min.js' %}"></script>
+</head>
+<body>
+    {% comment %} навигационная панель  {% endcomment %}
+    <div class="fixed-left">
+        <div class="collapse" id="navbarToggleExternalContent">
+            <div class="bg-dark p-4">
+                {% comment %} пункты навигационного меню {% endcomment %}
+                <h5 class="text-white h4">АИС Аэропорт</h5>
+                <span class="text-muted">Система для отслеживания полетов и билетов</span>
+                <div></div>
+
+                <nav class="nav nav-pills">
+
+                    {% comment %} главная страница {% endcomment %}
+                    {% comment %} <a href="{% url 'tests_creator:index' %}" class="nav-link">Главная</a> {% endcomment %}
+
+                    {% comment %} все авиакомпании {% endcomment %}
+                    <a href="{% url 'airoport_app:list_airlines' %}" class="nav-link">Авиакомпании</a>
+                    
+                    {% comment %} все кассиры {% endcomment %}
+                    <a href="{% url 'airoport_app:list_cashiers' %}" class="nav-link">Кассиры</a>
+
+                    {% comment %} все пользователи {% endcomment %}
+                    <a href="{% url 'airoport_app:list_flights' %}" class="nav-link">Полеты</a>
+
+                    {% comment %} {% if request.user.user_role.r_create_role %} {% endcomment %}
+                    {% comment %} все роли {% endcomment %}
+                    {% comment %} <a href="{% url 'tests_creator:roles_list' %}" class="nav-link">Роли</a> {% endcomment %}
+                    {% comment %} {% endif %} {% endcomment %}
+
+                    {% comment %} {% if request.user.user_role.r_statistics_visible %} {% endcomment %}
+                    {% comment %} статистика {% endcomment %}
+                    {% comment %} <a href="{% url 'tests_creator:statistics' %}" class="nav-link">Статистика</a> {% endcomment %}
+                    {% comment %} {% endif %} {% endcomment %}
+
+                    {% comment %} тесты пользователя {% endcomment %}
+                    {% comment %} <a href="{% url 'tests_creator:personal_user_tests' %}" class="nav-link">Мои тесты</a> {% endcomment %}
+                </nav>
+                {% comment %} конец пунктов навигационного меню {% endcomment %}
+            </div>
+        </div>
+        <nav class="navbar navbar-dark bg-dark">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            {% comment %} информация о пользователи {% endcomment %}
+            {% if request.user %}
+                <div>
+                    <form method="post" action="{% url 'airoport_app:logout' %}">
+
+                        <span class="text-white">{{ request.user }} | </span>
+
+
+
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">
+                            <span>Выйти</span>
+                        </button>
+                    </form>
+                </div>
+            {% endif %}
+        </nav>
+    </div>
+    {% comment %} конец навигационной панели {% endcomment %}
+     <div class="mx-5">
+        {% block content %}
+        {% endblock %}
+     </div>
+
+    <script type="text/javascript">
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+          })
+    </script>
+
+     {% block script %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,7 @@
+staticfiles/
+.venv/
+__pycache__/
+.env
+general.log
+requirementsDev.txt
+.vscode

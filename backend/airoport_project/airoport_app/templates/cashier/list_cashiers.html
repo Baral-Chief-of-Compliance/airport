@@ -1,0 +1,103 @@
+{% extends '../base.html' %}
+
+{% block title%}
+    Список кассиров
+{% endblock %}
+
+{% block content %}
+    <div class="row mt-3 mx-3">
+        <div class="col">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item active" aria-current="page">Кассиры</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <div class="row mx-3">
+        <div class="col text-right">
+            <a href="{% url 'airoport_app:add_cashier' %}" class="btn mb-3 btn-success btn-lg" type="button">Добавить кассира</a>
+        </div>
+    </div>
+
+
+    <div class="text-center pb-5">
+        <h1>Список кассиров</h1>
+    </div>
+
+    {% if cashiers %}
+         {% comment %} таблица со списком кассиров{% endcomment %}
+         <table class="table table-hover">
+            <thead class="text-center">
+                <tr>
+                    <th scope="col">Фамилия кассира</th>
+                    <th scope="col">Редактировать</th>
+                    <th scope="col">Удалить</th>
+                </tr>
+            </thead>
+
+            <tbody class="text-center">
+                {% for ch in cashiers %}
+                    <tr>
+                        {% comment %} фамилия кассира {% endcomment %}
+                        <th scope="row">{{ ch.cashier_surname }}</th>
+
+                        {% comment %} кнопка редактировать  {% endcomment %}
+                        <td>
+                            <a href="{% url 'airoport_app:update_cashier' ch.cashier_id %}" class="btn btn-warning" type=button> 
+                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z"/>
+                                </svg>   
+                            </a>
+                        </td>
+
+                        {% comment %} кнопка удалить {% endcomment %}
+                        <td>
+                            <button class="btn btn-danger" type="button" data-toggle="modal" data-target="#deleteCashier{{ch.cashier_id}}">
+                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/>
+                                </svg> 
+                            </button>
+                        </td>
+                    </tr>
+
+                    {% comment %} модальное окно под удаление кассира {% endcomment %}
+                    <div class="modal fade" id="deleteCashier{{ch.cashier_id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header bg-danger">
+                                    <h5 class="modal-title text-white" id="exampleModalLabel">Удалить кассира</h5>
+                                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                            
+                                <div class="modal-body">          
+                                    <p class="text-center">
+                                        Вы точно хотите удалить кассира <span class="text-danger">"{{ ch.cashier_surname }}"</span>?          
+                                    </p>            
+                                </div>
+                                            
+                                <div class="modal-footer">          
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Нет</button>
+                                    <form method="POST" action="{% url 'airoport_app:delete_cashier' ch.cashier_id  %}">
+                                        {% csrf_token %}
+                                        <input type="submit" class="btn btn-danger" value="Да, удаляем">
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% comment %} конец модального окна под удаление кассира {% endcomment %}
+                {% endfor %}
+            </tbody>
+    {% else %}
+        <div class="text-center">
+            <h2 class="font-italic mt-5 text-secondary">Кассиров пока нет...</h2>
+
+            <a href="{% url 'airoport_app:add_cashier' %}" class="btn btn-lg btn-success mt-3" class="btn btn-success mt-2 btn-lg" type="button">Добавить кассира</a>
+        </div>
+    {% endif %}
+
+{% endblock %}

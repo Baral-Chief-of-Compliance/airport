@@ -1,0 +1,44 @@
+{% extends '../base.html' %}
+
+{% block title%}
+    Редактирование кассира - {{ cashier.cashier_surname }}
+{% endblock %}
+
+{% block content %}
+
+    <div class="row mt-3 mx-3">
+        <div class="col">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item" aria-current="page"><a href="{% url 'airoport_app:list_cashiers' %}">Кассиры</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Редактировать кассира</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <div class="container mt-3">
+        <div class="row justify-content-center" style="height:80vh">
+            <div class="card my-auto">
+                <div class="card-header text-center bg-warning">
+                    <h1>Редактировать кассира - {{ cashier.cashier_surname }}</h1>
+                </div>
+
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+                            {{ form.cashier_id.as_hidden }}
+                            {{ form.cashier_surname }}
+                        </div>
+                        <input class="btn btn-lg btn-warning btn-block" type="submit" value="Редактировать кассира">
+                        <a type="button" href="{% url 'airoport_app:list_cashiers' %}" class="btn btn-lg btn-secondary btn-block">
+                            Назад к списку кассиров
+                        </a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

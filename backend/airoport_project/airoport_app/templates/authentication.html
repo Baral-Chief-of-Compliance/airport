@@ -1,0 +1,65 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>АИС Аэропорт - Авторизация</title>
+
+        {% comment %} bs4.6 {% endcomment %}
+        <link rel="stylesheet" href="{% static '/airoport_app/css/bootstrap.min.css' %}">
+        <link rel="stylesheet" href="{% static '/airoport_app/css/bootstrap.min.css.map' %}">
+        <script src="{% static '/airoport_app/js/lib/jquery-3.7.1.min.js' %}"></script>
+        <script src="{% static '/airoport_app/js/lib/bootstrap4.6.2/bootstrap.bundle.min.js' %}"></script>
+    </head>
+
+    <body>
+
+        <div class="container">
+            <div class="row justify-content-center" style="height:100vh">
+                <div class="card my-auto" style="width: 30rem">
+
+                    <div class="card-header text-center bg-primary text-white">
+                        <h1>АИС Аэропорт</h1>
+                    </div>
+
+                    <div class="card-body">
+                        <form method="post" action="{% url 'airoport_app:login' %}">
+
+                            {% csrf_token %}
+
+                                <div class="mb-3">
+                                    {{ form.username }}
+                                </div>
+
+                                <div class="mb-3">
+                                    {{ form.password }}
+                                </div>
+
+                                <div>
+                                    {% if form.errors %}
+                                        <p class="text-danger text-center">Неправильный пароль или логин. Попробуйте еще раз.</p>
+                                    {% endif %}
+
+                                    {% if next %}
+                                        {% if user.is_authenticated %}
+                                            <p class="text-danger text-center">У вашей учетной записи нет доступа к этой странице</p>
+                                        {% else %}
+                                            <p class="text-danger text-center">Пожалуйста авторизируйтесь</p>
+                                        {% endif %}
+                                    {% endif %}
+                                </div>
+                            
+                            <input class="btn btn-lg btn-primary btn-block" type="submit" value="Войти">
+                            {% comment %} <button type="button">Потвердить</button> {% endcomment %}
+                            <input type="hidden" name="next" value="{{ next }}">
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </body>
+
+</html>

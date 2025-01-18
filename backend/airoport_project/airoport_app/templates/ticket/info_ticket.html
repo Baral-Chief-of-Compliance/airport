@@ -1,0 +1,620 @@
+{% extends '../base.html' %}
+
+
+{% block title%}
+    Информация о покупке {{purchase.number_purchase }}
+{% endblock %}
+
+
+{% block content %}
+    <div class="row mt-3 mx-3">
+        <div class="col">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item" aria-current="page"><a href="{% url 'airoport_app:list_flights' %}">Полеты</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">"{{ flight.flight_number }}"</li>
+                    <li class="breadcrumb-item" aria-current="page"><a href="{% url 'airoport_app:flight_tickets_list' flight.flight_number  %}">Билеты</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">"{{ ticket.ticket_number }}"</li>
+                    <li class="breadcrumb-item active" aria-current="page">Информация о покупке</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <div class="text-center pb-5">
+        <h3>Информация о покупке №{{ purchase.number_purchase }}</h3>
+    </div>
+
+    <div class="text-center pb-2">
+        <h3>Информация о пассажире</h3>
+    </div>
+
+    {% comment %} таблица информация о пассажире заказа {% endcomment %}
+    <table class="table table-hover">
+        <thead class="text-center">
+            <tr>
+                <th scope="col">Фамилия</th>
+                <th scope="col">Имя</th>
+                <th scope="col">Отчество</th>
+                <th scope="col">Номер телефона</th>
+                <th scope="col">Возраст</th>
+                <th scope="col">Серия паспорта</th>
+                <th scope="col">Номер паспорта</th>
+                <th scope="col">Серия загран паспорта</th>
+                <th scope="col">Номер загра паспорта</th>
+            </tr>
+        </thead>
+
+        <tbody class="text-center">
+                <tr>
+                    {% comment %} фамилия {% endcomment %}
+                    <th scope="row">{{ passenger.surname_passenger }}</th>
+
+                    {% comment %} имя {% endcomment %}
+                    <td>
+                        {{ passenger.name_passenger }}
+                    </td>
+
+                    {% comment %} отчество {% endcomment %}
+                    <td>
+                        {{ passenger.patronymic_passenger }}
+                    </td>
+
+                    {% comment %} номер телефона {% endcomment %}
+                    <td>
+                        {{ passenger.phone_number_passenger }}
+                    </td>
+
+                    {% comment %} возраст {% endcomment %}
+                    <td>
+                        {{ passenger.passenger_age }}
+                    </td>
+
+                    {% comment %} серия паспорта  {% endcomment %}
+                    <td>
+                        {{ passenger.passport_series_passenger }}
+                    </td>
+
+                    {% comment %} номер паспорта {% endcomment %}
+                    <td>
+                        {{ passenger.passport_number_passenger }}
+                    </td>
+
+                    {% comment %} серия загран паспорта {% endcomment %}
+                    <td>
+                        {% if passenger.abroad_passport_series_passenger %}
+                            {{ passenger.abroad_passport_series_passenger }}
+                        {% else %}
+                            <button type="button" class="btn btn-outline-secondary outline" data-toggle="tooltip" data-placement="top" title="Нет в базе">
+                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6"/>
+                                </svg>
+                            </button>
+                        {% endif %}
+                    </td>
+
+                    {% comment %} номер загран паспорта {% endcomment %}
+                    <td>
+                        {% if passenger.abroad_passport_number_passenger %}
+                            {{ passenger.abroad_passport_number_passenger }}
+                        {% else %}
+                            <button type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-placement="top" title="Нет в базе">
+                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6"/>
+                                </svg>
+                            </button>
+                        {% endif %}
+                    </td>
+                </tr>
+        </tbody>
+
+    </table>
+
+        {% if visa %}
+            {% comment %} таблица информация о визе  {% endcomment %}
+            <div class="text-center pb-2">
+                <h3>Информация о визе</h3>
+            </div>
+        
+            {% comment %} таблица информация о визе {% endcomment %}
+            <table class="table table-hover">
+                <thead class="text-center">
+                    <tr>
+                        <th scope="col">Срок действия(дней)</th>
+                        <th scope="col">Тип визы</th>
+                        <th scope="col">Кол-во разрешенных въездов</th>
+                        <th scope="col">Номер визы</th>
+                    </tr>
+                </thead>
+        
+                <tbody class="text-center">
+                        <tr>
+                            {% comment %} Срок действия(дней) {% endcomment %}
+                            <th scope="row">
+                                {{ visa.visa_validity_period }}
+                            </th>
+        
+                            {% comment %} Тип визы {% endcomment %}
+                            <td>
+                                {{ visa.visa_type }}
+                            </td>
+        
+                            {% comment %} Кол-во разрешенных въездов {% endcomment %}
+                            <td>
+                                {{ visa.visa_number_of_permitted_entries }}
+                            </td>
+        
+                            {% comment %} Номер визы {% endcomment %}
+                            <td>
+                                {{ visa.visa_number }}
+                            </td>
+                        </tr>
+                </tbody>
+            </table>
+        {% endif %}
+
+    {% comment %} информация о полете {% endcomment %}
+
+    <div class="text-center pb-2">
+        <h3>Информация о полете</h3>
+    </div>
+
+    <table class="table table-hover">
+        <thead class="text-center">
+            <tr>
+                <th scope="col">Номер рейс</th>
+                <th scope="col">Авиакомпания</th>
+                <th scope="col">Международный перелет</th>
+                <th scope="col">Место отправления</th>
+                <th scope="col">Место назначения</th>
+                <th scope="col">Дата вылета</th>
+                <th scope="col">Время вылета</th>
+            </tr>
+        </thead>
+
+        <tbody class="text-center">
+                <tr>
+                    {% comment %} номер полета {% endcomment %}
+                    <th scope="row">{{ flight.flight_number }}</th>
+
+                    {% comment %} Авиакомпания {% endcomment %}
+                    <td>
+                        {{ flight.flight_airline}}
+                    </td>
+
+                    <td>
+                        {% if flight.flight_international_status %}
+                            <button type="button" class="btn btn-outline-success" data-toggle="tooltip" data-placement="top" title="Является международным">
+                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 11.917 9.724 16.5 19 7.5"/>
+                                </svg>                                          
+                            </button>
+                        {% else %}
+                            <button type="button" class="btn btn-outline-danger" data-toggle="tooltip" data-placement="top" title="Не является международным">
+                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6"/>
+                                </svg>  
+                            </button>
+                        {% endif %}
+                    </td>
+
+                    {% comment %} Место отправления {% endcomment %}
+                    <td>
+                        {{ flight.flight_place_departure }}
+                    </td>
+
+                    {% comment %} Место назначения {% endcomment %}
+                    <td>
+                        {{ flight.flight_place_destination }}
+                    </td>
+
+                    {% comment %} дата вылета {% endcomment %}
+                    <td>
+                        {{ flight.flight_date }}
+                    </td>
+
+                    {% comment %} время вылета {% endcomment %}
+                    <td>
+                        {{ flight.flight_time }}
+                    </td>
+                </tr>
+        </tbody>
+    </table>
+
+    {% comment %} информация о тарифе {% endcomment %}
+        <div class="text-center pb-2">
+            <h3>Информация о тарифе</h3>
+        </div>
+         <table class="table table-hover table-responsive">
+            <thead class="text-center">
+                <tr>
+                    <th scope="col">Код тарифа</th>
+                    <th scope="col">Название тарифа</th>
+                    <th scope="col">Допустимый вес багажа(кг)</th>
+                    <th scope="col">Допустимый вес ручной клади(кг)</th>
+                    <th scope="col">Доп.плата за питомца</th>
+                    <th scope="col">Возможность сдачи билета</th>
+                    <th scope="col">Выбор места</th>
+                    <th scope="col">Возможность возврата</th>
+                    <th scope="col">Кол-во начисления бонусов</th>
+                    <th scope="col">Возможность повышения класса</th>
+                    <th scope="col">Наличие открытой даты вылета</th>
+                    <th scope="col">Приоритетная регистрация</th>
+                    <th scope="col">Приоритетный досмотр</th>
+                    <th scope="col">Приоритетная посадка</th>
+                    <th scope="col">Приоритетное обслуживание багажа</th>
+                </tr>
+            </thead>
+
+            <tbody class="text-center">
+                    <tr>
+                        {% comment %} код тарифа {% endcomment %}
+                        <th scope="row">{{ tarif.tarif_code }}</th>
+                        
+                        {% comment %} название тарифа {% endcomment %}
+                        <th scope="row">{{ tarif.name }}</th>
+
+                        {% comment %} Допустимый вес багажа(кг) {% endcomment %}
+                        <td>
+                            {{ tarif.permissible_luggage_weight }}
+                        </td>
+
+                        {% comment %} Допустимый вес ручной клади(кг) {% endcomment %}
+                        <td>
+                            {{ tarif.permissible_weight_hand_luggage }}
+                        </td>
+
+
+                        {% comment %} Доп.плата за питомца {% endcomment %}
+                        <td>
+                            {% if tarif.extra_fee_for_pet %}
+                            <button type="button" class="btn btn-outline-success" data-toggle="tooltip" data-placement="top" title="Имеется Доп.плата за питомца">
+                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 11.917 9.724 16.5 19 7.5"/>
+                                  </svg>                                          
+                            </button>
+                            {% else %}
+                            <button type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-placement="top" title="Отсутствует Доп.плата за питомца">
+                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6"/>
+                                </svg>  
+                            </button>
+                            {% endif %}
+                        </td>
+
+                        {% comment %} Возможность сдачи билета {% endcomment %}
+                        <td>
+                            {% if tarif.possibility_of_changing_ticket %}
+                            <button type="button" class="btn btn-outline-success" data-toggle="tooltip" data-placement="top" title="Имеется Возможность сдачи билета">
+                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 11.917 9.724 16.5 19 7.5"/>
+                                  </svg>                                          
+                            </button>
+                            {% else %}
+                            <button type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-placement="top" title="Отсутствует Возможность сдачи билета ">
+                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6"/>
+                                </svg>  
+                            </button>
+                            {% endif %}
+                        </td>
+
+                        {% comment %} Выбор места {% endcomment %}
+                        <td>
+                            {% if tarif.choice_of_location %}
+                            <button type="button" class="btn btn-outline-success" data-toggle="tooltip" data-placement="top" title="Имеется Возможность выбора места">
+                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 11.917 9.724 16.5 19 7.5"/>
+                                  </svg>                                          
+                            </button>
+                            {% else %}
+                            <button type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-placement="top" title="Отсутствует Возможность выбор места">
+                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6"/>
+                                </svg>  
+                            </button>
+                            {% endif %}
+                        </td>
+
+                        {% comment %} Возможность возврата {% endcomment %}
+                        <td>
+                            {% if tarif.possibility_of_return %}
+                            <button type="button" class="btn btn-outline-success" data-toggle="tooltip" data-placement="top" title="Имеется Возможность возврата">
+                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 11.917 9.724 16.5 19 7.5"/>
+                                  </svg>                                          
+                            </button>
+                            {% else %}
+                            <button type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-placement="top" title="Отсутствует Возможность возврата">
+                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6"/>
+                                </svg>  
+                            </button>
+                            {% endif %}
+                        </td>
+
+                        {% comment %} Кол-во начисления бонусов {% endcomment %}
+                        <td>
+                            {{ tarif.number_of_accrued_bonuses }}
+                        </td>
+
+                        {% comment %} Возможность повышения класса {% endcomment %}
+                        <td>
+                            {% if tarif.possibility_of_upgrade %}
+                            <button type="button" class="btn btn-outline-success" data-toggle="tooltip" data-placement="top" title="Имеется Возможность повышения класса">
+                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 11.917 9.724 16.5 19 7.5"/>
+                                  </svg>                                          
+                            </button>
+                            {% else %}
+                            <button type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-placement="top" title="Отсутствует Возможность повышения класса">
+                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6"/>
+                                </svg>  
+                            </button>
+                            {% endif %}
+                        </td>
+
+                        {% comment %} Наличие открытой даты вылета {% endcomment %}
+                        <td>
+                            {% if tarif.availability_of_open_departure_date %}
+                            <button type="button" class="btn btn-outline-success" data-toggle="tooltip" data-placement="top" title="Имеется открытая дата вылета">
+                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 11.917 9.724 16.5 19 7.5"/>
+                                  </svg>                                          
+                            </button>
+                            {% else %}
+                            <button type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-placement="top" title="Отсутствует открытая дата вылета">
+                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6"/>
+                                </svg>  
+                            </button>
+                            {% endif %}
+                        </td>
+
+                        {% comment %} Приоритетная регистрация {% endcomment %}
+                        <td>
+                            {% if tarif.priority_registration %}
+                            <button type="button" class="btn btn-outline-success" data-toggle="tooltip" data-placement="top" title="Имеется Приоритетная регистрация">
+                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 11.917 9.724 16.5 19 7.5"/>
+                                  </svg>                                          
+                            </button>
+                            {% else %}
+                            <button type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-placement="top" title="Отсутствует Приоритетная регистрация">
+                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6"/>
+                                </svg>  
+                            </button>
+                            {% endif %}
+                        </td>
+
+                        {% comment %} Приоритетный досмотр {% endcomment %}
+                        <td>
+                            {% if tarif.priority_screening %}
+                            <button type="button" class="btn btn-outline-success" data-toggle="tooltip" data-placement="top" title="Имеется Приоритетный досмотр">
+                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 11.917 9.724 16.5 19 7.5"/>
+                                  </svg>                                          
+                            </button>
+                            {% else %}
+                            <button type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-placement="top" title="Отсутствует Приоритетный досмотр">
+                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6"/>
+                                </svg>  
+                            </button>
+                            {% endif %}
+                        </td>
+
+                        {% comment %} Приоритетная посадка {% endcomment %}
+                        <td>
+                            {% if tarif.priority_boarding %}
+                            <button type="button" class="btn btn-outline-success" data-toggle="tooltip" data-placement="top" title="Имеется Приоритетная посадка">
+                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 11.917 9.724 16.5 19 7.5"/>
+                                  </svg>                                          
+                            </button>
+                            {% else %}
+                            <button type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-placement="top" title="Отсутствует Приоритетная посадка">
+                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6"/>
+                                </svg>  
+                            </button>
+                            {% endif %}
+                        </td>
+
+                        {% comment %} Приоритетное обслуживание багажа {% endcomment %}
+                        <td>
+                            {% if tarif.priority_baggage_handling %}
+                            <button type="button" class="btn btn-outline-success" data-toggle="tooltip" data-placement="top" title="Имеется Приоритетное обслуживание багажа">
+                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 11.917 9.724 16.5 19 7.5"/>
+                                  </svg>                                          
+                            </button>
+                            {% else %}
+                            <button type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-placement="top" title="Отсутствует Приоритетное обслуживание багажа">
+                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6"/>
+                                </svg>  
+                            </button>
+                            {% endif %}
+                        </td>
+                    </tr>
+            </tbody>
+
+        </table>
+
+
+        {% comment %} информация о билете {% endcomment %}
+
+        <div class="text-center pb-2">
+            <h3>Информация о билете</h3>
+        </div>
+
+        <table class="table table-hover">
+            <thead class="text-center">
+                <tr>
+                    <th scope="col">Номер билета</th>
+                    <th scope="col">Класс</th>
+                    <th scope="col">Цена(руб.)</th>
+                    <th scope="col">Ндд</th>
+                    <th scope="col">Ндп</th>
+                    <th scope="col">Наличие багажа</th>
+                    <th scope="col">Наличие ручной клади</th>
+                    <th scope="col">Наличие питмоца</th>
+                </tr>
+            </thead>
+    
+            <tbody class="text-center">
+                    <tr>
+                        {% comment %} Номера билета {% endcomment %}
+                        <th scope="row">{{ ticket.ticket_number }}</th>
+                        
+                        {% comment %} Класс {% endcomment %}
+                        <td>
+                            {{ticket.ticket_class}}
+                        </td>
+    
+                        {% comment %} Цена {% endcomment %}
+                        <td>
+                            {{ticket.ticket_price}}
+                        </td>
+    
+                        {% comment %} Ндд {% endcomment %}
+                        <td>
+                            {{ticket.not_valid_until_day}}
+                        </td>
+    
+                        {% comment %} Ндп  {% endcomment %}
+                        <td>
+                            {{ticket.not_valid_after_day}}
+                        </td>
+    
+                        {% comment %} Наличие багажа {% endcomment %}
+                        <td>
+                            {% if ticket.luggage_availability == None %}
+                            <button type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-placement="top" title="Билет не куплен">
+                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6"/>
+                                </svg>  
+                            </button>
+                            {% elif ticket.luggage_availability == True %}
+                            <button type="button" class="btn btn-outline-success" data-toggle="tooltip" data-placement="top" title="Наличие багажа">
+                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 11.917 9.724 16.5 19 7.5"/>
+                                  </svg>                                          
+                            </button>
+                            {% else %}
+                            <button type="button" class="btn btn-outline-danger" data-toggle="tooltip" data-placement="top" title="Отсутствие багажа">
+                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="m6 6 12 12m3-6a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                                  </svg>                                        
+                            </button>
+                            {% endif %}
+                        </td>
+    
+                        {% comment %} Наличие ручной клади {% endcomment %}
+                        <td>
+                            {% if ticket.hand_luggage_availability == None %}
+                            <button type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-placement="top" title="Билет не куплен">
+                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6"/>
+                                </svg>  
+                            </button>
+                            {% elif ticket.hand_luggage_availability == True %}
+                            <button type="button" class="btn btn-outline-success" data-toggle="tooltip" data-placement="top" title="Наличие ручной клади">
+                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 11.917 9.724 16.5 19 7.5"/>
+                                  </svg>                                          
+                            </button>
+                            {% else %}
+                            <button type="button" class="btn btn-outline-danger" data-toggle="tooltip" data-placement="top" title="Отсутствие ручной клади">
+                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="m6 6 12 12m3-6a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                                  </svg>                                        
+                            </button>
+                            {% endif %}
+                        </td>
+    
+                        {% comment %} Наличие питомца {% endcomment %}
+                        <td>
+                            {% if ticket.having_pet == None %}
+                            <button type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-placement="top" title="Билет не куплен">
+                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6"/>
+                                </svg>  
+                            </button>
+                            {% elif ticket.having_pet == True %}
+                            <button type="button" class="btn btn-outline-success" data-toggle="tooltip" data-placement="top" title="Наличие питомца">
+                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 11.917 9.724 16.5 19 7.5"/>
+                                  </svg>                                          
+                            </button>
+                            {% else %}
+                            <button type="button" class="btn btn-outline-danger" data-toggle="tooltip" data-placement="top" title="Отсутствие питомца">
+                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="m6 6 12 12m3-6a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                                  </svg>                                        
+                            </button>
+                            {% endif %}
+                        </td>
+                    </tr>
+            </tbody>
+        </table>
+
+
+        {% comment %} информация о покупке {% endcomment %}
+
+        <div class="text-center pb-2">
+            <h3>Информация о покупке</h3>
+        </div>
+
+        <table class="table table-hover">
+            <thead class="text-center">
+                <tr>
+                    <th scope="col">Номер заказа</th>
+                    <th scope="col">Дата заказа</th>
+                    <th scope="col">Время заказа</th>
+                    <th scope="col">Кассир</th>
+                    <th scope="col">Финальная цена(руб.)</th>
+                    <th scope="col">Статус покупки</th>
+                </tr>
+            </thead>
+    
+            <tbody class="text-center">
+                {% comment %} Номер заказа {% endcomment %}
+                <tr>
+                    <th scope="row">{{ purchase.number_purchase }}</th>
+
+                    {% comment %} Дата заказа {% endcomment %}
+                    <td>
+                        {{purchase.date}}
+                    </td>
+
+                    {% comment %} Время заказа {% endcomment %}
+                    <td>
+                        {{purchase.time}}
+                    </td>
+
+                    {% comment %} Кассир {% endcomment %}
+                    <td>
+                        {{ cashier.cashier_surname }}
+                    </td>
+
+                    {% comment %} Финальная цена {% endcomment %}
+                    <td>
+                        {{purchase.final_price}}
+                    </td>
+
+                    {% comment %} Статус покупки {% endcomment %}
+                    <td>
+                        {{purchase.status}}
+                    </td>
+
+                </tr>
+
+            </tbody>
+        </table>
+
+
+{% endblock %}
