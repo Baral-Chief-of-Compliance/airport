@@ -38,4 +38,5 @@ urlpatterns = [
     path('flights/<str:flight_number>/tickets/<str:ticket_number>/pass/', view=views.pass_ticket_path, name='pass_ticket'),
     #получить информацию о конкретном билете
     path('flights/<str:flight_number>/tickets/<str:ticket_number>/info/', view=views.InfoTicketView.as_view(), name='info_ticket'),
+    path('flights/<str:flight_number>/tickets/<str:ticket_number>/print/', view=views.get_paper_version_check, name='print_ticket'),
 ]

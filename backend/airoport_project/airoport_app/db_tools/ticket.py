@@ -73,7 +73,7 @@ def get_one_ticket(ticket_number: str) -> dict:
         'having_pet':sql_ticket['Наличие питомца'],
         'ticket_number':sql_ticket['Номер билета'],
         'ticket_price': sql_ticket['Цена билета'],
-        'ticket_price': sql_ticket['Цена билета'],
+        # 'ticket_price': sql_ticket['Цена билета'],
         'ticket_bought_out':sql_ticket['Выкуплены'],
         'tarif_code': sql_ticket['Тариф_Код тарифа']
     }

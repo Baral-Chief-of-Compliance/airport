@@ -23,6 +23,7 @@
 
     <div class="text-center pb-5">
         <h3>Информация о покупке №{{ purchase.number_purchase }}</h3>
+        <a href="{% url 'airoport_app:print_ticket' flight.flight_number ticket.ticket_number %}" type="button" class="btn btn-primary">Печать</a>
     </div>
 
     <div class="text-center pb-2">
